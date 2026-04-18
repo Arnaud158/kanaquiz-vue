@@ -1,23 +1,25 @@
 <script setup lang="ts"></script>
+
 <template>
-  <nav className="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div className="container">
+  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
       <div id="navbar">
-        <ul className="nav navbar-nav">
+        <ul class="nav navbar-nav">
           <!-- { this.props.gameState == 'game' ? (
           <li id="nav-choosecharacters">
             <a href="javascript:;" onClick="{this.props.handleEndGame}">
-              <span className="glyphicon glyphicon-small glyphicon-arrow-left"></span> Back to menu
+              <span class="glyphicon glyphicon-small glyphicon-arrow-left"></span> Back to menu
             </a>
           </li>
           ) : -->
-          <li id="nav-kanaquiz"><p className="nav navbar-text">Kana Pro</p></li>
+          <li id="nav-kanaquiz"><p class="nav navbar-text">Kana Pro</p></li>
           <!-- } -->
         </ul>
       </div>
     </div>
   </nav>
 </template>
+
 <style lang="scss" scoped>
 #navbar ul li {
   font-size: 1.2em;
