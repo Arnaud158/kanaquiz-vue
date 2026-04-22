@@ -7,3 +7,19 @@ export function shuffleArray<T>(array: T[]): T[] {
   }
   return shuffled
 }
+
+export function cartesianProductMultiple<T>(...sets: T[][]): T[][] {
+  if (sets.length === 0) {
+    return [[]]
+  }
+  const firstSet = sets[0]!
+  const remainingSets = sets.slice(1)
+  const remainingProduct = cartesianProductMultiple(...remainingSets)
+  const result: T[][] = []
+  for (const element of firstSet) {
+    for (const product of remainingProduct) {
+      result.push([element, ...product])
+    }
+  }
+  return result
+}

@@ -1,10 +1,20 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useGameStateStore } from '@/stores/gameStateStore'
+
+const gameState = useGameStateStore()
+</script>
 
 <template>
   <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
       <div id="navbar">
         <ul class="nav navbar-nav">
+          <li v-if="gameState.gameState === 'game'">
+            <a @click="gameState.finishGame">
+              <span class="glyphicon glyphicon-small glyphicon-arrow-left"></span>
+              Back to menu
+            </a>
+          </li>
           <!-- { this.props.gameState == 'game' ? (
           <li id="nav-choosecharacters">
             <a href="javascript:;" onClick="{this.props.handleEndGame}">
@@ -12,7 +22,7 @@
             </a>
           </li>
           ) : -->
-          <li id="nav-kanaquiz"><p class="nav navbar-text">Kana Pro</p></li>
+          <li v-else><p class="nav navbar-text">Kana Pro</p></li>
           <!-- } -->
         </ul>
       </div>

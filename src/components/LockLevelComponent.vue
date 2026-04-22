@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { useLockStore } from '@/stores/lockStore'
-import type { LockLevel } from '@/types/lockLevel'
+import type { StageLevel } from '@/types/stageLevel'
 import { ref, watchEffect } from 'vue'
 const lockStore = useLockStore()
 
-const lockLevel = ref<string>('1')
+const lockLevel = ref<string>(lockStore.lockLevel)
 
 watchEffect(() => {
   if (!lockLevel.value) return
-  const data = lockLevel.value as LockLevel
-  lockStore.changeLockLevel(data)
+  const data = lockLevel.value as StageLevel
+  lockStore.lockLevel = data
 })
 </script>
 <template>

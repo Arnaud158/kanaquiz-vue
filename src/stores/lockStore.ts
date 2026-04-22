@@ -1,14 +1,10 @@
-import type { LockLevel } from '@/types/lockLevel'
+import type { StageLevel } from '@/types/stageLevel'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const useLockStore = defineStore('lockState', () => {
+export const useLockStore = defineStore('lock', () => {
   const isLocked = ref<boolean>(false)
-  const lockLevel = ref<LockLevel>('1')
+  const lockLevel = ref<StageLevel>('1')
 
-  function changeLockLevel(level: LockLevel): void {
-    lockLevel.value = level
-  }
-
-  return { isLocked, lockLevel, changeLockLevel }
+  return { isLocked, lockLevel }
 })
