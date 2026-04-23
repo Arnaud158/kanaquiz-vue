@@ -4,6 +4,7 @@ import PreviousAnswerComponent from '@/components/PreviousAnswerComponent.vue'
 import ProgressBarComponent from '@/components/ProgressBarComponent.vue'
 import StageDescriptionComponent from '@/components/StageDescriptionComponent.vue'
 import router from '@/router'
+import { useLockStore } from '@/stores/lockStore'
 import { useQuestionStore } from '@/stores/questionStore'
 import { useStageStore } from '@/stores/stageStore'
 import type { LevelFourQuestion } from '@/types/questions'
@@ -11,6 +12,7 @@ import { computed, onBeforeMount, ref, watch } from 'vue'
 
 const questionStore = useQuestionStore()
 const stageStore = useStageStore()
+const lockStore = useLockStore()
 
 const question = computed<LevelFourQuestion>(
   () => questionStore.currentQuestion as LevelFourQuestion,
@@ -20,12 +22,15 @@ const displayGame = ref<boolean>(false)
 
 watch(progression, () => {
   if (!stageStore.isStageFinished()) return
-  router.push('/game/end')
+  if (lockStore.isLocked) {
+    stageStore.changeToNewStageLevel('4')
+  } else {
+    router.push('/game/end')
+  }
 })
 
 onBeforeMount(() => {
   const currentStage = stageStore.getCurrentStage()
-
   stageStore.changeToNewStageLevel(currentStage)
 })
 </script>
