@@ -11,18 +11,24 @@ Table of contents :
 
 ## Project Setup
 
-### Dependencies
+### Tools needed
+
+- [Node.js](https://nodejs.org/fr/download) is required to build the JavaScript app (v24 LTS recommended, other versions may also work).
+- [npm](https://www.npmjs.com/) to handle JavaScript dependencies (NPM IS INSTALLED BY DEFAULT WITH NODE.JS)
+- OR [pnpm](https://pnpm.io/) to handle JavaScript dependencies (I personally prefer `pnpm` over `npm` and I used it for this project).
+
+### Dependencies installation
 
 This will download all dependencies in `node_modules/`
 
 ```sh
-npm install
+npm install # or pnpm install
 ```
 
 ### Compile and Hot-Reload for Development
 
 ```sh
-npm dev
+npm dev # or pnpm dev
 ```
 
 ### Type-Check, Compile and Minify for Production
@@ -30,7 +36,7 @@ npm dev
 This will generate a production ready website in `dist/`
 
 ```sh
-npm build
+npm build # or pnpm build
 ```
 
 ### Recommended IDE Setup
