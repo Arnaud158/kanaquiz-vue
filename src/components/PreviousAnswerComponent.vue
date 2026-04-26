@@ -44,7 +44,7 @@ const formattedAnswer = computed(() => {
     <span class="pull-right glyphicon glyphicon-remove"></span>
   </div>
   <div v-else class="previous-result none">
-    {{ t('previousAnserComponent.previousAnswerNone') }}
+    {{ t('previousAnswerComponent.previousAnswerNone') }}
   </div>
 </template>
 <style lang="scss" scoped>
