@@ -27,6 +27,7 @@ export const useStageStore = defineStore('stage', () => {
       currentStage.value = lockStore.lockLevel
     } else {
       currentStage.value = stageLevel
+      questionStore.resetPreviousQuestion()
     }
     stageLength.value = quizSettings.stageLength[stageLevel]
     currentProgress.value = 0

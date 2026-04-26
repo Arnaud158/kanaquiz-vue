@@ -39,11 +39,17 @@ export const useQuestionStore = defineStore('question', () => {
     generateNextQuestion()
   }
 
+  function resetPreviousQuestion() {
+    previousQuestion.value = null
+    previousQuestionWasCorrect.value = null
+  }
+
   return {
     currentQuestion: readonly(currentQuestion),
     previousQuestion: readonly(previousQuestion),
     previousQuestionWasCorrect: readonly(previousQuestionWasCorrect),
     generateNextQuestion,
     handleQuestionAnswer,
+    resetPreviousQuestion,
   }
 })
