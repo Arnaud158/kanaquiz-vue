@@ -533,7 +533,7 @@ export const kanaDictionary: KanaDict = {
     {
       name: 'katakana_group_32_alternative',
       kanas: [
-        { kana: 'チェ', romaji: ['cha'] },
+        { kana: 'チェ', romaji: ['che'] },
         { kana: 'シェ', romaji: ['she'] },
         { kana: 'ジェ', romaji: ['je'] },
       ],
