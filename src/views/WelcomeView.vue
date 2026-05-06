@@ -92,7 +92,7 @@ watchEffect(() => {
             <div v-if="cantStartGameBecauseNothingIsChoosed" class="error-message">
               {{ t('welcomeView.welcomePanelErrorNothingIsChoosed') }}
             </div>
-            <button ref="startButtonRef" class="btn btn-danger startgame-button" @click="startGame">
+            <button ref="startButtonRef" class="btn btn-danger" @click="startGame">
               {{ t('welcomeView.welcomeStartButton') }}
             </button>
           </div>
@@ -128,7 +128,7 @@ watchEffect(() => {
   bottom: 20px;
   right: 12px;
   color: #fff;
-  background: #d9534f;
+  background: #d43f3a;
   padding: 7px 0 2px;
   width: 60px;
   text-align: center;
@@ -142,7 +142,7 @@ watchEffect(() => {
   top: 100%;
   width: 0;
   height: 0;
-  border-top: 10px solid #d9534f;
+  border-top: 10px solid #d43f3a;
   border-right: 30px solid transparent;
   border-bottom: 0 solid transparent;
   border-left: 30px solid transparent;

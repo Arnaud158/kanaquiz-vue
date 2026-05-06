@@ -40,6 +40,14 @@ const altSelectionStatus = computed(() => getSelectionStatus(altGroups.value))
 
 const alikeSelectionStatus = computed(() => getSelectionStatus(alikeGroups.value))
 
+const accessibleTitle = computed(() => {
+  const parts = props.title.split('·')
+  if (parts.length === 2) {
+    return { western: parts[0]!.trim(), japanese: parts[1]!.trim() }
+  }
+  return null
+})
+
 const toggleKanaGroup = (kanaGroup: KanaGroup) => {
   if (choosenKanaStore.isAlreadyPresent(kanaGroup)) {
     choosenKanaStore.removeKanaGroup(kanaGroup)
@@ -67,6 +75,10 @@ const isSelected = (kanaGroup: KanaGroup): boolean => choosenKanaStore.isAlready
 const getRomaji = (kanaGroup: KanaGroup): string =>
   kanaGroup.kanas.map((kana) => kana.romaji[0]).join(' · ')
 
+const getAccessibleText = (kanaGroup: KanaGroup): string => {
+  return kanaGroup.kanas.map((kana) => kana.romaji[0]).join(', ')
+}
+
 const getKana = (kanaGroup: KanaGroup): string => {
   return kanaGroup.kanas.map((kana) => kana.kana).join(' · ')
 }
@@ -75,44 +87,70 @@ const getKana = (kanaGroup: KanaGroup): string => {
 <template>
   <div class="col-sm-6">
     <div class="panel panel-default">
-      <div class="panel-heading">{{ props.title }}</div>
+      <div class="panel-heading">
+        <span aria-hidden="true">{{ props.title }}</span>
+
+        <span v-if="accessibleTitle" class="sr-only">
+          <span lang="ja">{{ accessibleTitle.japanese }}</span>
+        </span>
+        <span v-else class="sr-only">{{ props.title }}</span>
+      </div>
       <div class="panel-body selection-areas">
-        <div
+        <label
           v-for="kanaGrp in baseGroups"
           :key="kanaGrp.name"
           class="choose-row"
-          @click="() => toggleKanaGroup(kanaGrp)"
           @mousedown="handlePress(kanaGrp.name)"
           @mouseup="handleRelease"
           @touchstart="handlePress(kanaGrp.name)"
           @touchend="handleRelease"
         >
+          <input
+            type="checkbox"
+            class="sr-only-checkbox"
+            :checked="isSelected(kanaGrp)"
+            @change="toggleKanaGroup(kanaGrp)"
+          />
+
           <span
             class="glyphicon glyphicon-small"
             :class="isSelected(kanaGrp) ? 'glyphicon-check' : 'glyphicon-unchecked'"
+            aria-hidden="true"
           ></span>
-          {{ pressedGroupName === kanaGrp.name ? getKana(kanaGrp) : getRomaji(kanaGrp) }}
-        </div>
-        <div
-          v-if="altGroups.length > 0"
-          class="choose-row"
-          @click="showAlternatives = !showAlternatives"
-        >
-          <span
-            class="glyphicon glyphicon-small"
-            :class="{
-              'glyphicon-check': altSelectionStatus === 'all' || altSelectionStatus === 'some',
-              half: altSelectionStatus === 'some',
-              'glyphicon-unchecked': altSelectionStatus === 'none',
-            }"
+
+          <span aria-hidden="true">
+            {{ pressedGroupName === kanaGrp.name ? getKana(kanaGrp) : getRomaji(kanaGrp) }}
+          </span>
+
+          <span class="sr-only" lang="ja">
+            {{ getAccessibleText(kanaGrp) }}
+          </span>
+        </label>
+
+        <div v-if="altGroups.length > 0" class="choose-row header-row">
+          <button
+            type="button"
+            class="icon-action"
             @click="(e) => handleToggleGroup(altGroups, altSelectionStatus, e)"
-          ></span>
-          <span class="toggle-caret">{{ showAlternatives ? '▲' : '▼' }}</span>
-          {{ t('chooseKanaComponent.chooseKanaAlternativeCharacters') }}
+            :aria-label="t('chooseKanaComponent.chooseKanaAlternativeCharactersButtonAria')"
+          >
+            <span
+              class="glyphicon glyphicon-small"
+              :class="{
+                'glyphicon-check': altSelectionStatus === 'all' || altSelectionStatus === 'some',
+                half: altSelectionStatus === 'some',
+                'glyphicon-unchecked': altSelectionStatus === 'none',
+              }"
+            ></span>
+          </button>
+          <button type="button" class="text-action" @click="showAlternatives = !showAlternatives">
+            <span class="toggle-caret">{{ showAlternatives ? '▲' : '▼' }}</span>
+            {{ t('chooseKanaComponent.chooseKanaAlternativeCharacters') }}
+          </button>
         </div>
 
         <template v-if="showAlternatives">
-          <div
+          <label
             v-for="kanaGrp in altGroups"
             :key="kanaGrp.name"
             class="choose-row alt-row"
@@ -123,36 +161,59 @@ const getKana = (kanaGroup: KanaGroup): string => {
                 'katakana_group_29_alternative',
               ].includes(kanaGrp.name),
             }"
-            @click="toggleKanaGroup(kanaGrp)"
             @mousedown="handlePress(kanaGrp.name)"
             @mouseup="handleRelease"
             @touchstart="handlePress(kanaGrp.name)"
             @touchend="handleRelease"
           >
+            <input
+              type="checkbox"
+              class="sr-only-checkbox"
+              :checked="isSelected(kanaGrp)"
+              @change="toggleKanaGroup(kanaGrp)"
+            />
+
             <span
               class="glyphicon glyphicon-small"
               :class="isSelected(kanaGrp) ? 'glyphicon-check' : 'glyphicon-unchecked'"
+              aria-hidden="true"
             ></span>
-            {{ pressedGroupName === kanaGrp.name ? getKana(kanaGrp) : getRomaji(kanaGrp) }}
-          </div>
+
+            <span aria-hidden="true">
+              {{ pressedGroupName === kanaGrp.name ? getKana(kanaGrp) : getRomaji(kanaGrp) }}
+            </span>
+
+            <span class="sr-only" lang="ja">
+              {{ getAccessibleText(kanaGrp) }}
+            </span>
+          </label>
         </template>
 
-        <div v-if="alikeGroups.length > 0" class="choose-row" @click="showAlike = !showAlike">
-          <span
-            class="glyphicon glyphicon-small"
-            :class="{
-              'glyphicon-check': alikeSelectionStatus === 'all' || alikeSelectionStatus === 'some',
-              half: alikeSelectionStatus === 'some',
-              'glyphicon-unchecked': alikeSelectionStatus === 'none',
-            }"
+        <div v-if="alikeGroups.length > 0" class="choose-row header-row">
+          <button
+            type="button"
+            class="icon-action"
             @click="(e) => handleToggleGroup(alikeGroups, alikeSelectionStatus, e)"
-          ></span>
-          <span class="toggle-caret">{{ showAlike ? '▲' : '▼' }}</span>
-          {{ t('chooseKanaComponent.chooseKanaLookAlikeCharacters') }}
+            :aria-label="t('chooseKanaComponent.chooseKanaLookAlikeCharactersButtonAria')"
+          >
+            <span
+              class="glyphicon glyphicon-small"
+              :class="{
+                'glyphicon-check':
+                  alikeSelectionStatus === 'all' || alikeSelectionStatus === 'some',
+                half: alikeSelectionStatus === 'some',
+                'glyphicon-unchecked': alikeSelectionStatus === 'none',
+              }"
+            ></span>
+          </button>
+          <button type="button" class="text-action" @click="showAlike = !showAlike">
+            <span class="toggle-caret">{{ showAlike ? '▲' : '▼' }}</span>
+            {{ t('chooseKanaComponent.chooseKanaLookAlikeCharacters') }}
+          </button>
         </div>
 
         <template v-if="showAlike">
-          <div
+          <label
             v-for="kanaGrp in alikeGroups"
             :key="kanaGrp.name"
             class="choose-row alt-row"
@@ -163,18 +224,32 @@ const getKana = (kanaGroup: KanaGroup): string => {
                 'katakana_group_29_alternative',
               ].includes(kanaGrp.name),
             }"
-            @click="toggleKanaGroup(kanaGrp)"
             @mousedown="handlePress(kanaGrp.name)"
             @mouseup="handleRelease"
             @touchstart="handlePress(kanaGrp.name)"
             @touchend="handleRelease"
           >
+            <input
+              type="checkbox"
+              class="sr-only-checkbox"
+              :checked="isSelected(kanaGrp)"
+              @change="toggleKanaGroup(kanaGrp)"
+            />
+
             <span
               class="glyphicon glyphicon-small"
               :class="isSelected(kanaGrp) ? 'glyphicon-check' : 'glyphicon-unchecked'"
+              aria-hidden="true"
             ></span>
-            {{ pressedGroupName === kanaGrp.name ? getKana(kanaGrp) : getRomaji(kanaGrp) }}
-          </div>
+
+            <span aria-hidden="true">
+              {{ pressedGroupName === kanaGrp.name ? getKana(kanaGrp) : getRomaji(kanaGrp) }}
+            </span>
+
+            <span class="sr-only" lang="ja">
+              {{ getAccessibleText(kanaGrp) }}
+            </span>
+          </label>
         </template>
       </div>
       <div class="panel-footer">
@@ -200,68 +275,125 @@ const getKana = (kanaGroup: KanaGroup): string => {
 
 <style lang="scss" scoped>
 .btn {
-  padding: 0px;
+  padding: 0;
 }
 
-.choose-characters {
-  .panel-heading {
-    font-weight: bold;
-  }
-  .panel-heading span {
-    color: #aaa;
-  }
-  .panel-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.icon-action,
+.text-action {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  margin: 0;
+  font-weight: normal;
+}
+
+label.choose-row,
+label.alt-row {
+  margin: 0;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.choose-row {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-size: 1em;
+  padding: 5px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #eee;
   }
 
-  .panel-footer a {
-    text-decoration: none;
-    color: #337ab7;
-  }
-  .choose-row {
-    font-size: 1em;
-    padding: 5px;
-  }
-  .choose-row:not(:last-child) {
-    border-bottom: 1px #eee solid;
-  }
-  .alt-row {
-    padding-left: 20px;
-    background-color: #fafafa;
-  }
-  .divider-row {
-    border-top: 2px #ddd solid;
-  }
-  .toggle-caret {
-    margin: 0 4px;
-  }
   @media (min-width: 768px) {
-    .choose-row:hover {
+    &:hover {
       background-color: #f4f4f4;
     }
   }
-  .choose-row:hover {
-    cursor: pointer;
+
+  .glyphicon-small {
+    margin-right: 5px;
   }
-  .glyphicon {
-    font-size: 0.9em;
-  }
-  .glyphicon-check {
+}
+
+.alt-row {
+  padding-left: 20px;
+  background-color: #fafafa;
+}
+
+.divider-row {
+  border-top: 2px solid #ddd;
+}
+
+div.header-row {
+  display: flex;
+  align-items: center;
+  padding: 0 !important;
+}
+
+.icon-action {
+  padding: 5px;
+}
+
+.text-action {
+  padding: 5px 5px 5px 0;
+  flex-grow: 1;
+  text-align: left;
+}
+
+.sr-only-checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+label.choose-row:has(input.sr-only-checkbox:focus-visible) {
+  outline: none !important;
+  border-radius: 4px;
+  box-shadow: 0 0 0 3px rgba(66, 139, 202, 0.5) !important;
+  position: relative;
+  z-index: 10;
+}
+
+.panel-heading {
+  font-weight: bold;
+}
+
+.panel-body.selection-areas {
+  padding: 7px;
+}
+
+.panel-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toggle-caret {
+  margin: 0 4px;
+}
+
+.glyphicon {
+  font-size: 0.9em;
+
+  &-check {
     color: green;
+
+    &.half {
+      color: #737373;
+    }
   }
-  .glyphicon-check.half {
-    color: #ccc;
-  }
-  .glyphicon-unchecked {
-    color: #ccc;
-  }
-  .selection-areas {
-    padding: 7px;
-  }
-  .success-percent {
-    color: #ccc;
+
+  &-unchecked {
+    color: #737373;
   }
 }
 </style>

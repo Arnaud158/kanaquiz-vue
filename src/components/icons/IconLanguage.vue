@@ -5,6 +5,7 @@
     width="16"
     height="16"
     fill="currentColor"
+    aria-hidden="true"
   >
     <path
       fill-rule="evenodd"

@@ -13,10 +13,10 @@ const { t } = useI18n()
       <div id="navbar">
         <ul class="nav navbar-nav">
           <li v-if="gameState.gameState === 'game'">
-            <a @click="gameState.finishGame">
+            <button class="nav-button" @click="gameState.finishGame">
               <span class="glyphicon glyphicon-small glyphicon-arrow-left"></span>
               {{ t('navbarComponent.navbarBackToMenu') }}
-            </a>
+            </button>
           </li>
           <li v-else><p class="nav navbar-text">Kana Pas Pro</p></li>
         </ul>
@@ -144,5 +144,23 @@ const { t } = useI18n()
 .navbar .navbar-nav .open .dropdown-menu > .disabled > a:focus {
   color: #999 !important;
   background-color: transparent !important;
+}
+
+.nav-button {
+  background: transparent;
+  border: none;
+  padding: 15px;
+  line-height: 20px;
+  color: #fff !important;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-button:hover {
+  color: #bbb !important;
+}
+
+.nav-button:focus-visible {
+  background-color: #444;
 }
 </style>

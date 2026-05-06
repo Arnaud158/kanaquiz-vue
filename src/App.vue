@@ -45,6 +45,15 @@ body {
   background-color: #e5e5e5;
   color: #111;
 }
+
+*:focus-visible {
+  outline: none !important;
+  border-radius: 4px;
+  box-shadow: 0 0 0 3px rgba(66, 139, 202, 0.5) !important;
+  transition: box-shadow 0.2s ease;
+  position: relative;
+  z-index: 10;
+}
 .outercontainer {
   background-color: #f5f5f5;
   padding-bottom: 20px;
@@ -75,5 +84,15 @@ body {
 .glyphicon-none:before {
   content: '\2122';
   color: transparent !important;
+}
+.btn-link {
+  color: #3473a7;
+}
+.btn-danger {
+  background-color: #d43f3a;
+}
+.form-control,
+select {
+  color: #696969;
 }
 </style>
