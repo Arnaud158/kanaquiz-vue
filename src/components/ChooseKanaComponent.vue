@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useChoosenKanaStore } from '@/stores/choosenKanaStore'
 import type KanaGroup from '@/types/kanaGroup'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 interface Props {
@@ -16,16 +16,9 @@ const { t } = useI18n()
 const showAlternatives = ref<boolean>(false)
 const showAlike = ref<boolean>(false)
 const pressedGroupName = ref<string | null>(null)
-// Linux screen reader have issues to read kana
-const isLinuxDesktop = ref<boolean>(false)
 
 const handlePress = (name: string) => (pressedGroupName.value = name)
 const handleRelease = () => (pressedGroupName.value = null)
-
-onMounted(() => {
-  const ua = globalThis.navigator.userAgent
-  isLinuxDesktop.value = ua.includes('Linux') && !ua.includes('Android')
-})
 
 const baseGroups = computed(() =>
   props.kanaGroups.filter((g) => !g.name.endsWith('_alternative') && !g.name.endsWith('_alike')),
@@ -50,11 +43,7 @@ const alikeSelectionStatus = computed(() => getSelectionStatus(alikeGroups.value
 const accessibleTitle = computed(() => {
   const parts = props.title.split('·')
   if (parts.length === 2) {
-    if (isLinuxDesktop.value) {
-      return parts[0]!.trim()
-    } else {
-      return parts[1]!.trim()
-    }
+    return { western: parts[0]!.trim(), japanese: parts[1]!.trim() }
   }
   return null
 })
@@ -92,11 +81,7 @@ const getRomaji = (kanaGroup: KanaGroup): string =>
   kanaGroup.kanas.map((kana) => kana.romaji[0]).join(' · ')
 
 const getAccessibleText = (kanaGroup: KanaGroup): string => {
-  if (isLinuxDesktop.value) {
-    return kanaGroup.kanas.map((kana) => kana.romaji[0]).join(', ')
-  }
-
-  return kanaGroup.kanas.map((kana) => kana.kana).join(', ')
+  return kanaGroup.kanas.map((kana) => kana.romaji[0]).join(', ')
 }
 
 const getKana = (kanaGroup: KanaGroup): string => {
@@ -111,7 +96,7 @@ const getKana = (kanaGroup: KanaGroup): string => {
         <span aria-hidden="true">{{ props.title }}</span>
 
         <span v-if="accessibleTitle" class="sr-only">
-          <span lang="ja">{{ accessibleTitle }}</span>
+          <span lang="ja">{{ accessibleTitle.western }}</span>
         </span>
         <span v-else class="sr-only">{{ props.title }}</span>
       </div>
