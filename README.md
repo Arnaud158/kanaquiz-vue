@@ -51,6 +51,9 @@ npm build # or pnpm build
 ├── 📂 src/                # Main application source code
 │   ├── 📂 assets/         # Non-code resources (styles, images, data)
 │   ├── 📂 components/     # Reusable Vue UI components
+│   ├── 📂 locales/        # Folder containing every translations
+│   │   └── 📂 en          # English translation
+│   │   └── 📂 fr          # French translation
 │   ├── 📂 router/
 │   │   └── 📄 index.ts    # Application routing configuration
 │   ├── 📂 stores/         # Global state management and game logic (with Pinia)
@@ -58,6 +61,7 @@ npm build # or pnpm build
 │   ├── 📂 utils/          # Shared utility functions
 │   ├── 📂 views/          # Page-level Vue components (routed views)
 │   ├── 📄 App.vue         # Root component wrapping the application
+│   └── 📄 i18n.ts         # Translation plugin's configuration
 │   └── 📄 main.ts         # Application entry point (Vue plugins setup and mounting)
 └── 📄 index.html          # Main HTML template loading the Vue app
 ```
