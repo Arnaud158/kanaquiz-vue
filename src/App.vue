@@ -2,13 +2,26 @@
 import { RouterView } from 'vue-router'
 import NavbarComponent from './components/NavbarComponent.vue'
 import { useI18n } from 'vue-i18n'
-import { watchEffect } from 'vue'
+import { onMounted, watchEffect } from 'vue'
+import { localStorageVersion } from './main'
 
 const { t, locale } = useI18n()
 
 watchEffect(() => {
   document.title = t('html.htmlTitle')
   document.documentElement.lang = locale.value
+})
+
+onMounted(() => {
+  const currentLocalStorageVersion = localStorage.getItem('localStorageVersion')
+  if (
+    currentLocalStorageVersion === null ||
+    Number(currentLocalStorageVersion) !== localStorageVersion
+  ) {
+    localStorage.clear()
+    localStorage.setItem('localStorageVersion', localStorageVersion.toString())
+    globalThis.location.reload()
+  }
 })
 </script>
 
